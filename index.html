@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>류철희 - 디지털 명함</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(150deg, #ffffff 0%, #dde8ff 100%);
+      --card-bg: #ffffff;
+      --text-primary: #1a1a2e;
+      --text-secondary: #555e7b;
+      --accent: #7c4dff;
+      --accent-hover: #6038cc;
+      --accent-light: #ede7ff;
+      --border: #e2e5f0;
+      --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(124, 77, 255, 0.10), 0 24px 60px rgba(124, 77, 255, 0.08);
+      --avatar-bg: #ede7ff;
+      --tag-bg: #ede7ff;
+      --tag-text: #7c4dff;
+      --toggle-bg: #e2e5f0;
+    }
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(150deg, #0d1128 0%, #000000 100%);
+      --card-bg: #1a1a2e;
+      --text-primary: #eef0ff;
+      --text-secondary: #8b92b8;
+      --accent: #a57dff;
+      --accent-hover: #b994ff;
+      --accent-light: #231a40;
+      --border: #2a2845;
+      --shadow: 0 2px 8px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.45), 0 24px 60px rgba(0,0,0,0.25);
+      --avatar-bg: #231a40;
+      --tag-bg: #231a40;
+      --tag-text: #a57dff;
+      --toggle-bg: #231a40;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      transition: background 0.4s, color 0.3s;
+    }
+
+    /* 테마 토글 */
+    .theme-toggle {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--accent-light);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .theme-toggle:hover { transform: scale(1.08); }
+    .theme-toggle .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--tag-text);
+    }
+
+    /* 카드 */
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 420px;
+      padding: 44px 38px 38px;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* 헤더 */
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--avatar-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      flex-shrink: 0;
+      border: 3px solid var(--accent-light);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .location-tag {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .job-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 16px;
+      border-radius: 50px;
+    }
+
+    .bio {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* 연락처 */
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 24px 0 0;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .contact-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      word-break: break-all;
+    }
+    .contact-item a:hover { color: var(--accent); }
+
+    /* SNS 버튼 */
+    .sns-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .sns-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .sns-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sns-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      color: var(--text-primary);
+      background: var(--card-bg);
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+
+    .sns-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: scale(1.03);
+      box-shadow: 0 6px 24px rgba(124, 77, 255, 0.35);
+    }
+
+    .sns-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    .sns-btn-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .sns-btn-label {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .sns-btn-desc {
+      font-size: 11px;
+      opacity: 0.65;
+      font-weight: 400;
+    }
+
+    .sns-btn-arrow {
+      margin-left: auto;
+      font-size: 14px;
+      opacity: 0.4;
+    }
+
+    /* 푸터 */
+    .card-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--border);
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 32px 22px 28px; border-radius: 22px; }
+      .name { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" role="main">
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">
+    <span id="toggle-icon">🌙</span>
+    <span class="label" id="toggle-label">Dark</span>
+  </button>
+
+    <div class="card-header">
+      <div class="avatar" aria-label="프로필 사진">🧑‍💼</div>
+
+      <div>
+        <h1 class="name">류철희</h1>
+        <p class="location-tag">📍 서울, 대한민국</p>
+      </div>
+
+      <div class="job-badge">
+        ✦ 선임매니저 &nbsp;·&nbsp; 세이지우드
+      </div>
+
+      <p class="bio">
+        8년차 브랜드 마케터.<br>
+        직장인 독서모임 '추월차선'을 운영합니다.<br>
+        AI 자동화와 와인을 사랑합니다. 🍷
+      </p>
+    </div>
+
+    <ul class="contact-list" aria-label="연락처">
+      <li class="contact-item">
+        <span class="contact-icon">✉️</span>
+        <a href="mailto:oasis@sagewood.co.kr">oasis@sagewood.co.kr</a>
+      </li>
+      <li class="contact-item">
+        <span class="contact-icon">📞</span>
+        <a href="tel:01096308015">010-9630-8015</a>
+      </li>
+    </ul>
+
+    <div class="sns-section">
+      <p class="sns-title">Links</p>
+      <div class="sns-buttons">
+
+        <!-- 인스타그램 (개인) -->
+        <a class="sns-btn" href="https://www.instagram.com/steel_smile/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          <span class="sns-btn-text">
+            <span class="sns-btn-label">Instagram</span>
+            <span class="sns-btn-desc">@steel_smile</span>
+          </span>
+          <span class="sns-btn-arrow">→</span>
+        </a>
+
+        <!-- 추월차선 독서모임 SNS -->
+        <a class="sns-btn" href="https://www.instagram.com/fastlane_bookclub/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          <span class="sns-btn-text">
+            <span class="sns-btn-label">추월차선 독서모임</span>
+            <span class="sns-btn-desc">@fastlane_bookclub</span>
+          </span>
+          <span class="sns-btn-arrow">→</span>
+        </a>
+
+        <!-- 서재 (Notion) -->
+        <a class="sns-btn" href="https://www.notion.so/d74cce97121c45249429cacccb837b97?v=0caacf68784d42259003b6a8df9d8f0f&source=copy_link" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.047.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/>
+          </svg>
+          <span class="sns-btn-text">
+            <span class="sns-btn-label">서재</span>
+            <span class="sns-btn-desc">Notion 독서 기록</span>
+          </span>
+          <span class="sns-btn-arrow">→</span>
+        </a>
+
+      </div>
+    </div>
+
+    <p class="card-footer">© 2026 류철희 · 세이지우드</p>
+  </div>
+
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+    })();
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('toggle-icon').textContent = theme === 'dark' ? '☀️' : '🌙';
+      document.getElementById('toggle-label').textContent = theme === 'dark' ? 'Light' : 'Dark';
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+  </script>
+</body>
+</html>
